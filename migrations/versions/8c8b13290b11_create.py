@@ -1,8 +1,8 @@
-"""create table
+"""create
 
-Revision ID: b2a7df9775aa
+Revision ID: 8c8b13290b11
 Revises: 
-Create Date: 2023-07-04 09:51:18.947147
+Create Date: 2023-07-04 10:03:06.481900
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b2a7df9775aa'
+revision = '8c8b13290b11'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -74,12 +74,6 @@ def upgrade() -> None:
     sa.Column('is_confirmed', sa.Boolean(), nullable=True),
     sa.Column('confirmation_sent', sa.DateTime(), nullable=True),
     sa.Column('confirmation_date', sa.DateTime(), nullable=True),
-    sa.Column('posts_id', sa.Integer(), nullable=True),
-    sa.Column('comments_id', sa.Integer(), nullable=True),
-    sa.Column('likes_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['comments_id'], ['comments.id'], ),
-    sa.ForeignKeyConstraint(['likes_id'], ['likes.id'], ),
-    sa.ForeignKeyConstraint(['posts_id'], ['posts.id'], ),
     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

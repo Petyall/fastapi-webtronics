@@ -32,8 +32,8 @@ async def create_email_confirmation_template(email_to: EmailStr):
 
 async def send_email_confirmation_email(email_to: EmailStr):
     # Переменная с адресом отправителя
-    email_to_mock = settings.SMTP_USER # ЗАМЕНИТЬ НА ПОЛЬЗОВАТЕЛЬСКИЙ EMAIL
-    # email_to_mock = email_to
+    # email_to_mock = settings.SMTP_USER # ЗАМЕНИТЬ НА ПОЛЬЗОВАТЕЛЬСКИЙ EMAIL
+    email_to_mock = email_to
     # Переменная вызывающая текст для отправки письма
     msg_content = await create_email_confirmation_template(email_to_mock)
 
