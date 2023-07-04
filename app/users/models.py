@@ -19,11 +19,16 @@ class User(Base):
     is_confirmed = Column(Boolean())
     confirmation_sent = Column(DateTime())
     confirmation_date = Column(DateTime())
+    posts_id = Column(Integer, ForeignKey("posts.id"))
+    comments_id = Column(Integer, ForeignKey("comments.id"))
+    likes_id = Column(Integer, ForeignKey("likes.id"))
+
 
     # Создание отношения для SQLAlchemy
     role = relationship("Role", back_populates="users")
-    posts = relationship("Post", back_populates="owner")
-    # comments = relationship("Comment", back_populates="owner")
+    posts = relationship("Post", back_populates="users")
+    comments = relationship("Comment", back_populates="users")
+    likes = relationship("Like", back_populates="users")
 
     # Фукнция переопределяющая отображения названия модели
     def __str__(self):
