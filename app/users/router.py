@@ -7,7 +7,7 @@ from app.users.dependences import get_current_user
 from app.users.models import User
 from app.users.auth import get_password_hash, authenticate_user, create_access_token
 from app.users.services import UserService
-from app.users.schemas import UserCreate
+from app.users.schemas import UserCreate, UserUpdate, UserLogin
 from app.exceptions import UserAlreadyExistsException, IncorrectEmailOrPasswordException, NotEnoughAuthorityException
 from app.email import send_email_confirmation_email
 
@@ -31,7 +31,7 @@ async def register_user(user_data: UserCreate):
     # Преобразование пароля в хэшированный
     hashed_password = get_password_hash(user_data.password)
     # Создание пользователя
-    await UserService.add(email=user_data.email, hashed_password=hashed_password, uuid=str(uuid4()), is_confirmed=False)
+    await UserService.add(email=user_data.email, first_name=user_data.first_name, last_name=user_data.last_name, hashed_password=hashed_password, uuid=str(uuid4()), is_confirmed=False)
     # Отправка ссылки подтверждения пользователю
     await send_email_confirmation_email(user_data.email)
     # Добавление даты отправки ссылки подтверждения в БД
@@ -60,7 +60,7 @@ async def confirm_email(email: str, uuid: str):
 
 
 @router.post("/login")
-async def login_user(response: Response, user_data: UserCreate):
+async def login_user(response: Response, user_data: UserLogin):
     """
     Авторизация пользователя
     """
@@ -88,6 +88,14 @@ async def logout_user(response: Response):
     # Удаление токена из cookie
     response.delete_cookie("access_token")
     return "До свидания!"
+
+
+@router.put("/profile")
+async def update_user(user_data: UserUpdate, current_user: User = Depends(get_current_user)):
+    """
+    Обновление информации о пользователе
+    """
+    await UserService.update_user(email=current_user.email, first_name=user_data.first_name, last_name=user_data.last_name)
 
 
 @router.get("/me")

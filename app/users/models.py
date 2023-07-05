@@ -10,6 +10,8 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     email = Column(String, nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     hashed_password = Column(String, nullable=False)
     role_id = Column(ForeignKey("roles.id"), default=1)
     uuid = Column(String())
