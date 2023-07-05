@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy import delete, select, insert, update
 from datetime import datetime
-from app.posts.models import Post, Comment
+from app.posts.models import Post, Comment, Like
 from app.database import async_session_maker
 import json
 from app.services.base import BaseService
@@ -80,3 +80,31 @@ class CommentService(BaseService):
             comments = delete(cls.model).where(cls.model.id == comment_id)
             await session.execute(comments)
             await session.commit()
+
+
+class LikeService(BaseService):
+    model = Like
+
+    @classmethod
+    async def delete_like(cls, like_id: int):
+        async with async_session_maker() as session:
+            like = delete(cls.model).where(cls.model.id == like_id)
+            await session.execute(like)
+            await session.commit()
+
+    @classmethod
+    async def update_dislike(cls, dislike_id: int):
+        async with async_session_maker() as session:
+            like = update(cls.model).where(cls.model.id == dislike_id).values(degree=False)
+            await session.execute(like)
+            await session.commit()
+
+    @classmethod
+    async def update_like(cls, like_id: int):
+        async with async_session_maker() as session:
+            like = update(cls.model).where(cls.model.id == like_id).values(degree=True)
+            await session.execute(like)
+            await session.commit()
+
+
+

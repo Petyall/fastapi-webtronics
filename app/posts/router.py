@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from fastapi import UploadFile, APIRouter
 from typing import List, Optional
-from app.posts.services import PostService, CommentService
+from app.posts.services import PostService, CommentService, LikeService
 from app.users.dependences import get_current_user
 from app.users.models import User
 from app.posts.schemas import PostWithComments
@@ -111,3 +111,42 @@ async def delete_post(post_id: int, current_user: User = Depends(get_current_use
     await CommentService.delete_comments(post_id=post_id)
     
     return {"message": "Post deleted successfully"}
+
+
+@router.get("/likes")
+async def add_like(post_id: int, current_user: User = Depends(get_current_user)):
+    post = await PostService.find_one_or_none(id=post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.owner_id == current_user.id:
+        raise HTTPException(status_code=403, detail="You are the owner of this post")
+
+    like = await LikeService.find_one_or_none(post_id=post_id, owner_id=current_user.id)
+    if like:
+        if like.degree:
+            await LikeService.delete_like(like_id=like.id)
+        else:
+            await LikeService.update_like(like_id=like.id)
+    else:
+        await LikeService.add(post_id=post_id, owner_id=current_user.id, degree=True)
+
+    return {"message": "Like operation completed successfully"}
+
+@router.get("/dislikes")
+async def add_dislike(post_id: int, current_user: User = Depends(get_current_user)):
+    post = await PostService.find_one_or_none(id=post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.owner_id == current_user.id:
+        raise HTTPException(status_code=403, detail="You are the owner of this post")
+
+    dislike = await LikeService.find_one_or_none(post_id=post_id, owner_id=current_user.id)
+    if dislike:
+        if dislike.degree:
+            await LikeService.update_dislike(dislike_id=dislike.id)
+        else:
+            await LikeService.delete_like(like_id=dislike.id)
+    else:
+        await LikeService.add(post_id=post_id, owner_id=current_user.id, degree=False)
+
+    return {"message": "Dislike operation completed successfully"}

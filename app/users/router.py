@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Response
 from datetime import datetime
 from uuid import uuid4
 
+from app.posts.services import PostService, LikeService, CommentService
 from app.users.dependences import get_current_user
 from app.users.models import User
 from app.users.auth import get_password_hash, authenticate_user, create_access_token
@@ -124,3 +125,13 @@ async def read_users_id(user_id: int, current_user: User = Depends(get_current_u
     else:
         raise NotEnoughAuthorityException
     
+
+@router.get("/profile")
+async def get_user_profile(current_user: User = Depends(get_current_user)):
+    context = {
+        "user": current_user,
+        "posts": await PostService.find_all(owner_id=current_user.id),
+        "comments": await CommentService.find_all(owner_id=current_user.id),
+        "likes": await LikeService.find_all(owner_id=current_user.id)
+    }
+    return(context)
