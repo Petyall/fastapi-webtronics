@@ -142,7 +142,7 @@ async def delete_comment(comment_id: int, post_id: int, current_user: User = Dep
     return {"message": "Комментарий успешно удален"}
 
 
-@router.get("/likes")
+@router.get("/{post_id}/like")
 async def add_like(post_id: int, current_user: User = Depends(get_current_user)):
     """
     Добавление лайка
@@ -170,7 +170,7 @@ async def add_like(post_id: int, current_user: User = Depends(get_current_user))
         return {"message": "Лайк успешно добавлен"}
 
 
-@router.get("/dislikes")
+@router.get("/{post_id}/dislikes")
 async def add_dislike(post_id: int, current_user: User = Depends(get_current_user)):
     """
     Добавление дизлайка

@@ -18,20 +18,8 @@ class Comment(Base):
     owner = relationship("User", back_populates="comments")
     post = relationship("Post", back_populates="comments")
 
-
-class Post(Base):
-    __tablename__ = "posts"
-
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(String, nullable=False)
-    photos = Column(String, nullable=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-    date_created = Column(DateTime, default=datetime.utcnow)
-    date_last_updated = Column(DateTime, default=datetime.utcnow)
-
-    owner = relationship("User", back_populates="posts")
-    comments = relationship("Comment", back_populates="post", foreign_keys=[Comment.post_id], cascade="all, delete")
-    likes = relationship("Like", back_populates="post")
+    def __str__(self):
+        return f"Комментарий пользователя - {self.owner_id} - {self.text}"
 
 
 class Like(Base):
@@ -46,3 +34,24 @@ class Like(Base):
     
     owner = relationship("User", back_populates="likes")
     post = relationship("Post", back_populates="likes")
+
+    def __str__(self):
+        return f"{'Лайк' if self.degree else 'Дизлайк'} пользователя - {self.owner_id} - для поста - {self.post_id}"
+
+
+class Post(Base):
+    __tablename__ = "posts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(String, nullable=False)
+    photos = Column(String, nullable=True)
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    date_created = Column(DateTime, default=datetime.utcnow)
+    date_last_updated = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="posts")
+    comments = relationship("Comment", back_populates="post", foreign_keys=[Comment.post_id])
+    likes = relationship("Like", back_populates="post", foreign_keys=[Like.post_id])
+
+    def __str__(self):
+        return f"Пост пользователя - {self.owner_id} -{self.id}"
