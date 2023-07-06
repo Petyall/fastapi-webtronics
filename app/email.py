@@ -42,3 +42,10 @@ async def send_email_confirmation_email(email_to: EmailStr):
         server.login(settings.SMTP_USER, settings.SMTP_PASS)
         # Отправка письма
         server.send_message(msg_content)
+
+
+async def test_send_email_confirmation_email(email_to: EmailStr):
+    # Получение UUID пользователя
+    uuid = await get_uuid(email_to)
+    confirm_link = f"{settings.APP_ORIGIN}auth/confirm-email?email={email_to}&uuid={uuid}"
+    return confirm_link

@@ -1,10 +1,14 @@
 from pydantic import BaseSettings
 
 class Settings(BaseSettings):
-    SMTP_HOST:str
-    SMTP_PORT:int
-    SMTP_USER:str
-    SMTP_PASS:str
+    # SMTP_HOST:str
+    # SMTP_PORT:int
+    # SMTP_USER:str
+    # SMTP_PASS:str
+    SMTP_HOST = 'smtp.gmail.com'
+    SMTP_PORT = 222
+    SMTP_USER = 'test@test.com'
+    SMTP_PASS = 'test'
 
     SECRET_KEY = 'my_secret_key'
     ALGORITHM = 'HS256'

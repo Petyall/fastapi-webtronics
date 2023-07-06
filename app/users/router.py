@@ -9,7 +9,7 @@ from app.users.auth import get_password_hash, authenticate_user, create_access_t
 from app.users.services import UserService
 from app.users.schemas import UserCreate, UserUpdate, UserLogin
 from app.exceptions import UserAlreadyExistsException, IncorrectEmailOrPasswordException, NotEnoughAuthorityException
-from app.email import send_email_confirmation_email
+from app.email import test_send_email_confirmation_email
 
 
 router = APIRouter(
@@ -33,11 +33,12 @@ async def register_user(user_data: UserCreate):
     # Создание пользователя
     await UserService.add(email=user_data.email, first_name=user_data.first_name, last_name=user_data.last_name, hashed_password=hashed_password, uuid=str(uuid4()), is_confirmed=False)
     # Отправка ссылки подтверждения пользователю
-    await send_email_confirmation_email(user_data.email)
+    confirmation_link = await test_send_email_confirmation_email(user_data.email)
     # Добавление даты отправки ссылки подтверждения в БД
     await UserService.update_user(email=user_data.email, confirmation_sent=datetime.now())
     # Возврат успешного сообщения
-    return f"Для подтверждения пользователя {user_data.email} было отправлено письмо с ссылкой для завершения регистрации"
+    # return f"Для подтверждения пользователя {user_data.email} было отправлено письмо с ссылкой для завершения регистрации"
+    return f"Для подтверждения пользователя {user_data.email} должно было быть отправлено письмо, но в режиме тестирования, оно не отправилось. Вы можете перейти по ссылке {confirmation_link}"
 
 
 @router.get("/confirm-email")
