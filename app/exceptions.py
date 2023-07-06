@@ -42,3 +42,16 @@ class IncorrectFormatTokenException(ProjectException):
 class IncorrectEmailOrPasswordException(ProjectException):
     status_code=status.HTTP_401_UNAUTHORIZED
     detail="Неверная почта или пароль"
+
+
+# Ошибки по работе с постами
+class PostNotFoundException(ProjectException):
+    status_code=status.HTTP_404_NOT_FOUND
+    detail="Пост не найден"
+
+
+# Ошибки по работе с комментариями
+class CommentNotFoundException(ProjectException):
+    status_code=status.HTTP_404_NOT_FOUND
+    detail="Комментарий не найден"
+

@@ -42,6 +42,8 @@ class Comment(CommentBase):
 class PostWithComments(BaseModel):
     post: Post 
     comments: List[Comment]
+    likes: int
+    dislikes: int
 
     class Config:
         orm_mode = True

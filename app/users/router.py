@@ -136,6 +136,9 @@ async def read_users_id(user_id: int, current_user: User = Depends(get_current_u
 
 @router.get("/profile")
 async def get_user_profile(current_user: User = Depends(get_current_user)):
+    """
+    Получение личного кабинета пользователя
+    """
     context = {
         "user": current_user,
         "posts": await PostService.find_all(owner_id=current_user.id),

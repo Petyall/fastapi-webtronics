@@ -23,10 +23,12 @@ class AdminAuth(AuthenticationBackend):
             request.session.update({"token": access_token})
         return True
 
+
     async def logout(self, request: Request) -> bool:
         # Очистка токена из cookie
         request.session.clear()
         return True
+
 
     async def authenticate(self, request: Request) -> Optional[RedirectResponse]:
         # Попытка получить токен
@@ -39,6 +41,5 @@ class AdminAuth(AuthenticationBackend):
         # Если пользователя не существует или у него нет админ прав, произойдет возврат на страницу авторизации
         if not user or user.role_id != 2:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
-
 
 authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)
